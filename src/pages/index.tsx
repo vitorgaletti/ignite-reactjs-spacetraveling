@@ -78,7 +78,6 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
     } catch (err) {
       alert(err.message);
     }
-    console.log(nextPage);
   }
 
   return (
@@ -87,8 +86,9 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
         <title>Home | spacetraveling</title>
       </Head>
       <main className={commonStyles.contentContainer}>
-        <Header />
-
+        <div className={commonStyles.contentHeader}>
+          <Header />
+        </div>
         <div className={styles.posts}>
           {posts.map(post => (
             <Link href={`/post/${post.uid}`} key={post.uid}>

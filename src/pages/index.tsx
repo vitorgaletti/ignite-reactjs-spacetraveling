@@ -70,6 +70,79 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
               </ul>
             </a>
           </Link>
+
+          <Link href="/">
+            <a>
+              <strong>Algum Título</strong>
+              <p>Pensado em sincronização em vez de ciclos de vida.</p>
+              <ul>
+                <li>
+                  <FiCalendar />
+                  <span>10 Fev 2022</span>
+                </li>
+
+                <li>
+                  <FiUser />
+                  <span>Vitor Galeti</span>
+                </li>
+              </ul>
+            </a>
+          </Link>
+
+          <Link href="/">
+            <a>
+              <strong>Algum Título</strong>
+              <p>Pensado em sincronização em vez de ciclos de vida.</p>
+              <ul>
+                <li>
+                  <FiCalendar />
+                  <span>10 Fev 2022</span>
+                </li>
+
+                <li>
+                  <FiUser />
+                  <span>Vitor Galeti</span>
+                </li>
+              </ul>
+            </a>
+          </Link>
+
+          <Link href="/">
+            <a>
+              <strong>Algum Título</strong>
+              <p>Pensado em sincronização em vez de ciclos de vida.</p>
+              <ul>
+                <li>
+                  <FiCalendar />
+                  <span>10 Fev 2022</span>
+                </li>
+
+                <li>
+                  <FiUser />
+                  <span>Vitor Galeti</span>
+                </li>
+              </ul>
+            </a>
+          </Link>
+
+          <Link href="/">
+            <a>
+              <strong>Algum Título</strong>
+              <p>Pensado em sincronização em vez de ciclos de vida.</p>
+              <ul>
+                <li>
+                  <FiCalendar />
+                  <span>10 Fev 2022</span>
+                </li>
+
+                <li>
+                  <FiUser />
+                  <span>Vitor Galeti</span>
+                </li>
+              </ul>
+            </a>
+          </Link>
+          <button type="button">Carregar mais posts</button>
         </div>
       </main>
     </>

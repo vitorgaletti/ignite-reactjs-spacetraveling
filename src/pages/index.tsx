@@ -3,6 +3,10 @@ import { GetStaticProps } from 'next';
 import Prismic from '@prismicio/client';
 import { FiCalendar, FiUser } from 'react-icons/fi';
 import Link from 'next/link';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { useState } from 'react';
+import Head from 'next/head';
 import { getPrismicClient } from '../services/prismic';
 
 import Header from '../components/Header';
@@ -29,120 +33,87 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }: HomeProps): JSX.Element {
+  const formattedPost = postsPagination.results.map(post => {
+    return {
+      ...post,
+      first_publication_date: format(
+        new Date(post.first_publication_date),
+        'dd MMM yyyy',
+        { locale: ptBR }
+      ),
+    };
+  });
+
+  const [posts, setPosts] = useState<Post[]>(formattedPost);
+  const [nextPage, setNextPage] = useState(postsPagination.next_page);
+  const [currentPage, setCurrentPage] = useState(1);
+  async function handleNextPage(): Promise<void> {
+    if (currentPage !== 1 && nextPage === null) {
+      return;
+    }
+
+    try {
+      const postsResults = await fetch(`${nextPage}`).then(response =>
+        response.json()
+      );
+
+      const newPosts = postsResults.results.map(post => {
+        return {
+          uid: post.uid,
+          first_publication_date: format(
+            new Date(post.first_publication_date),
+            'dd MMM yyyy',
+            { locale: ptBR }
+          ),
+          data: {
+            title: post.data.title,
+            subtitle: post.data.subtitle,
+            author: post.data.author,
+          },
+        };
+      });
+      setNextPage(postsResults.next_page);
+      setCurrentPage(postsResults.page);
+      setPosts([...posts, ...newPosts]);
+    } catch (err) {
+      alert(err.message);
+    }
+    console.log(nextPage);
+  }
+
   return (
     <>
+      <Head>
+        <title>Home | spacetraveling</title>
+      </Head>
       <main className={commonStyles.contentContainer}>
         <Header />
 
         <div className={styles.posts}>
-          <Link href="/">
-            <a>
-              <strong>Algum Título</strong>
-              <p>Pensado em sincronização em vez de ciclos de vida.</p>
-              <ul>
-                <li>
-                  <FiCalendar />
-                  <span>10 Fev 2022</span>
-                </li>
+          {posts.map(post => (
+            <Link href={`/post/${post.uid}`} key={post.uid}>
+              <a>
+                <strong>{post.data.title}</strong>
+                <p>{post.data.subtitle}</p>
+                <ul>
+                  <li>
+                    <FiCalendar />
+                    <span>{post.first_publication_date}</span>
+                  </li>
 
-                <li>
-                  <FiUser />
-                  <span>Vitor Galeti</span>
-                </li>
-              </ul>
-            </a>
-          </Link>
-
-          <Link href="/">
-            <a>
-              <strong>Algum Título</strong>
-              <p>Pensado em sincronização em vez de ciclos de vida.</p>
-              <ul>
-                <li>
-                  <FiCalendar />
-                  <span>10 Fev 2022</span>
-                </li>
-
-                <li>
-                  <FiUser />
-                  <span>Vitor Galeti</span>
-                </li>
-              </ul>
-            </a>
-          </Link>
-
-          <Link href="/">
-            <a>
-              <strong>Algum Título</strong>
-              <p>Pensado em sincronização em vez de ciclos de vida.</p>
-              <ul>
-                <li>
-                  <FiCalendar />
-                  <span>10 Fev 2022</span>
-                </li>
-
-                <li>
-                  <FiUser />
-                  <span>Vitor Galeti</span>
-                </li>
-              </ul>
-            </a>
-          </Link>
-
-          <Link href="/">
-            <a>
-              <strong>Algum Título</strong>
-              <p>Pensado em sincronização em vez de ciclos de vida.</p>
-              <ul>
-                <li>
-                  <FiCalendar />
-                  <span>10 Fev 2022</span>
-                </li>
-
-                <li>
-                  <FiUser />
-                  <span>Vitor Galeti</span>
-                </li>
-              </ul>
-            </a>
-          </Link>
-
-          <Link href="/">
-            <a>
-              <strong>Algum Título</strong>
-              <p>Pensado em sincronização em vez de ciclos de vida.</p>
-              <ul>
-                <li>
-                  <FiCalendar />
-                  <span>10 Fev 2022</span>
-                </li>
-
-                <li>
-                  <FiUser />
-                  <span>Vitor Galeti</span>
-                </li>
-              </ul>
-            </a>
-          </Link>
-
-          <Link href="/">
-            <a>
-              <strong>Algum Título</strong>
-              <p>Pensado em sincronização em vez de ciclos de vida.</p>
-              <ul>
-                <li>
-                  <FiCalendar />
-                  <span>10 Fev 2022</span>
-                </li>
-
-                <li>
-                  <FiUser />
-                  <span>Vitor Galeti</span>
-                </li>
-              </ul>
-            </a>
-          </Link>
-          <button type="button">Carregar mais posts</button>
+                  <li>
+                    <FiUser />
+                    <span>{post.data.author}</span>
+                  </li>
+                </ul>
+              </a>
+            </Link>
+          ))}
+          {nextPage && (
+            <button type="button" onClick={handleNextPage}>
+              Carregar mais posts
+            </button>
+          )}
         </div>
       </main>
     </>
@@ -154,7 +125,6 @@ export const getStaticProps: GetStaticProps = async () => {
   const postsResponse = await prismic.query<any>(
     [Prismic.predicates.at('document.type', 'posts')],
     {
-      fetch: ['post.title', 'post.content', 'post.subtitle', 'post.author'],
       pageSize: 1,
     }
   );

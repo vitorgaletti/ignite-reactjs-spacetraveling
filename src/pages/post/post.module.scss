@@ -46,6 +46,16 @@
         }
       }
     }
+
+    > span {
+      display: block;
+      margin-top: 1rem;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 0.875rem;
+      line-height: 17px;
+      color: var(--gray-200);
+    }
   }
 
   article {

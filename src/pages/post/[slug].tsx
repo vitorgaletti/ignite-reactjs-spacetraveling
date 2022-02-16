@@ -21,6 +21,7 @@ import { Comments } from '../../components/Comments';
 
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
   data: {
     title: string;
     banner: {
@@ -74,6 +75,20 @@ export default function Post({
     }
   );
 
+  const isPostEdited =
+    post.first_publication_date !== post.last_publication_date;
+
+  let editionPost;
+  if (isPostEdited) {
+    editionPost = format(
+      new Date(post.last_publication_date),
+      "'* editado em' dd MMM yyyy', às' H':'m",
+      {
+        locale: ptBR,
+      }
+    );
+  }
+
   const totalWords = post.data.content.reduce((total, word) => {
     const headingWords = word.heading.trim().split(/\s+/).length;
     const bodyWords = RichText.asText(word.body).trim().split(/\s+/).length;
@@ -110,6 +125,7 @@ export default function Post({
                 <span>{`${readTime} min`}</span>
               </li>
             </ul>
+            {isPostEdited && <span>{editionPost}</span>}
           </div>
           {post.data.content.map(content => {
             return (
@@ -126,7 +142,9 @@ export default function Post({
           })}
         </div>
 
-        <section>
+        <section
+          className={`${commonStyles.contentContainer} ${styles.navigation}`}
+        >
           {navigation?.prevPost.length > 0 && (
             <div>
               <h3>{navigation.prevPost[0].data.title}</h3>
@@ -212,6 +230,7 @@ export const getStaticProps: GetStaticProps = async ({
   const post = {
     uid: response.uid,
     first_publication_date: response.first_publication_date,
+    last_publication_date: response.last_publication_date,
     data: {
       title: response.data.title,
       subtitle: response.data.subtitle,

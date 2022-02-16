@@ -68,3 +68,38 @@
     }
   }
 }
+
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(215, 215, 215, 0.1);
+  margin-bottom: 5rem;
+  padding: 0;
+
+  div {
+    margin-top: 3rem;
+
+    h3 {
+      font-weight: 400;
+      font-size: 1.125rem;
+      line-height: 22px;
+      letter-spacing: -0.5px;
+      color: var(--white);
+      padding-bottom: 0.5rem;
+    }
+
+    a {
+      font-weight: 600;
+      font-size: 1rem;
+      line-height: 19px;
+      letter-spacing: -0.5px;
+      color: var(--pink);
+    }
+  }
+
+  div + div {
+    text-align: right;
+  }
+}
